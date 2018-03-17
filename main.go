@@ -27,7 +27,7 @@ func main() {
 
 	exit := false
 	for !exit {
-		option, _ := helper.Menu("Select action", []string{"git pull", "git push", "Add repository", "Remove repository", "Exit"})
+		option, _ := helper.Menu("Select action", []string{"git pull", "git push", "git difftool", "Add repository", "Remove repository", "Exit"})
 		fmt.Println(option)
 		switch option {
 		case "git pull":
@@ -62,10 +62,27 @@ func main() {
 				output, err := gitpush.CombinedOutput()
 				fmt.Println(string(output))
 				if err != nil {
-					helper.ShowError(fmt.Sprintln("Error while git pull at", targets[i], ":\n", string(output), "\n\nError:", err))
+					helper.ShowError(fmt.Sprintln("Error while git push at", targets[i], ":\n", string(output), "\n\nError:", err))
 				}
 			}
 			helper.CloseProgressbar(handle)
+		case "git difftool":
+			targets, _ :=  helper.Checklist("Select repositories for push:", config.Repositories, "off")
+			if len(targets) == 0 {
+				break
+			}
+			for i := range targets {
+				gitdifftool := exec.Command("/usr/bin/git", "difftool", "--dir-diff")
+				gitdifftool.Dir = targets[i]
+				output, err := gitdifftool.CombinedOutput()
+				fmt.Println(string(output))
+				if err != nil {
+					helper.ShowError(fmt.Sprintln("Error while git difftool at", targets[i], ":\n", string(output), "\n\nError:", err))
+				}
+				if len(output) == 0 {
+					helper.ShowMessage(fmt.Sprintln("No difference for", targets[i]))
+				}
+			}
 		case "Add repository":
 			repository, _ := helper.GetDir()
 			if repository == "" {
