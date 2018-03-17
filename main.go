@@ -49,11 +49,14 @@ func main() {
 			}
 			helper.CloseProgressbar(handle)
 		case "git push":
-			targets, _ :=  helper.Checklist("Select repositories for pull:", config.Repositories, "on")
+			targets, _ :=  helper.Checklist("Select repositories for push:", config.Repositories, "on")
 			if len(targets) == 0 {
 				break
 			}
+			handle, _ := helper.CreateProgressbar("git push", len(targets))
 			for i := range targets {
+				helper.SetProgressbarValue(handle, i)
+				helper.SetProgressbarHeader(handle, targets[i])
 				gitpush := exec.Command("/usr/bin/git", "push")
 				gitpush.Dir = targets[i]
 				output, err := gitpush.CombinedOutput()
@@ -62,6 +65,7 @@ func main() {
 					helper.ShowError(fmt.Sprintln("Error while git pull at", targets[i], ":\n", string(output), "\n\nError:", err))
 				}
 			}
+			helper.CloseProgressbar(handle)
 		case "Add repository":
 			repository, _ := helper.GetDir()
 			if repository == "" {
