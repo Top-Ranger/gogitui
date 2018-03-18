@@ -79,7 +79,14 @@ func ShowError(msg string) error {
 func CreateProgressbar(header string, max int) (string, error) {
 	cmd := exec.Command("/usr/bin/kdialog", "--title", "gogitui", "--progressbar", header, strconv.Itoa(max))
 	out, err := cmd.Output()
-	return strings.TrimSpace(string(out)), err
+	handle := strings.TrimSpace(string(out))
+	if err != nil {
+		return handle, err
+	}
+	handleSplit := strings.Split(handle, " ")
+	cmd = exec.Command("/usr/bin/qdbus", handleSplit[0], handleSplit[1], "showCancelButton", "false")
+	err = cmd.Run()
+	return handle, err
 }
 
 // Updates the header text of the progress bar
