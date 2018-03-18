@@ -20,6 +20,11 @@ func main() {
 		}
 	}()
 
+	fmt.Println("== gogitui ==")
+	fmt.Println("A simple git ui managing multiple repositories")
+	fmt.Println("Copyright 2018 Marcus Soll")
+	fmt.Println("License: MIT\n")
+
 	config, err := helper.LoadConfig()
 	if err != nil {
 		panic(err)
