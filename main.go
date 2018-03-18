@@ -94,6 +94,19 @@ func main() {
 				break
 			}
 			for i := range targets {
+				// Test if there are changes
+				gitstatus := exec.Command("/usr/bin/git", "status", "--short")
+				gitstatus.Dir = targets[i]
+				output, err := gitstatus.CombinedOutput()
+				fmt.Println(string(output))
+				if err != nil {
+					helper.ShowError(fmt.Sprintln("Error while git status at", targets[i], ":\n", string(output), "\n\nError:", err))
+				}
+				if len(output) == 0 {
+					helper.ShowMessage(fmt.Sprintln("Nothing to commit for", targets[i]))
+					continue
+				}
+
 				commitExit := false
 				for !commitExit {
 					operator, _ := helper.Menu(fmt.Sprintln("Repository:", targets[i]), []string{"git commit -a", "git add -A && git commit", "git difftool", "Do nothing"})
