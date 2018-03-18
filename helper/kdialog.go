@@ -111,3 +111,9 @@ func CloseProgressbar (handle string) error {
 	cmd := exec.Command("/usr/bin/qdbus", handleSplit[0], handleSplit[1], "close")
 	return cmd.Start()
 }
+
+func TextInput(header string) (string, error) {
+	cmd := exec.Command("/usr/bin/kdialog", "--title", "gogitui", "--textinputbox", header)
+	out, err := cmd.Output()
+	return strings.TrimSpace(string(out)), err
+}

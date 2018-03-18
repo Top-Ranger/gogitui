@@ -27,7 +27,7 @@ func main() {
 
 	exit := false
 	for !exit {
-		option, _ := helper.Menu("Select action", []string{"git pull", "git push", "git difftool", "Add repository", "Remove repository", "Exit"})
+		option, _ := helper.Menu("Select action", []string{"git pull", "git push", "git difftool", "git commit", "Add repository", "Remove repository", "Exit"})
 		fmt.Println(option)
 		switch option {
 		case "git pull":
@@ -82,6 +82,75 @@ func main() {
 				if len(output) == 0 {
 					helper.ShowMessage(fmt.Sprintln("No difference for", targets[i]))
 				}
+			}
+		case "git commit":
+			targets, _ :=  helper.Checklist("Select repositories for commit:", config.Repositories, "off")
+			if len(targets) == 0 {
+				break
+			}
+			for i := range targets {
+				commitExit := false
+				for !commitExit {
+					operator, _ := helper.Menu(fmt.Sprintln("Repository:", targets[i]), []string{"git commit -a", "git add -A && git commit", "git difftool", "Do nothing"})
+					switch operator {
+					case "git commit -a":
+						message, _ := helper.TextInput(fmt.Sprintln("Commit message for", targets[i]))
+						if message == "" {
+							helper.ShowMessage("Aborting due to empty message")
+							break
+						}
+						gitcommand := exec.Command("/usr/bin/git", "commit", "-a", "--message", message)
+						gitcommand.Dir = targets[i]
+						output, err := gitcommand.CombinedOutput()
+						fmt.Println(string(output))
+						if err != nil {
+							helper.ShowError(fmt.Sprintln("Error while git commit -a at", targets[i], ":\n", string(output), "\n\nError:", err))
+							break
+						}
+						commitExit = true
+					case "git add -A && git commit":
+						gitcommand := exec.Command("/usr/bin/git", "add", "-A")
+						gitcommand.Dir = targets[i]
+						output, err := gitcommand.CombinedOutput()
+						fmt.Println(string(output))
+						if err != nil {
+							helper.ShowError(fmt.Sprintln("Error while git add -A at", targets[i], ":\n", string(output), "\n\nError:", err))
+							break
+						}
+						message, _ := helper.TextInput(fmt.Sprintln("Commit message for", targets[i]))
+						if message == "" {
+							helper.ShowMessage("Aborting due to empty message")
+							break
+						}
+						gitcommand = exec.Command("/usr/bin/git", "commit", "--message", message)
+						gitcommand.Dir = targets[i]
+						output, err = gitcommand.CombinedOutput()
+						fmt.Println(string(output))
+						if err != nil {
+							helper.ShowError(fmt.Sprintln("Error while git commit at", targets[i], ":\n", string(output), "\n\nError:", err))
+							break
+						}
+						commitExit = true
+					case "git difftool":
+						gitdifftool := exec.Command("/usr/bin/git", "difftool", "--dir-diff")
+						gitdifftool.Dir = targets[i]
+						output, err := gitdifftool.CombinedOutput()
+						fmt.Println(string(output))
+						if err != nil {
+							helper.ShowError(fmt.Sprintln("Error while git difftool at", targets[i], ":\n", string(output), "\n\nError:", err))
+						}
+						if len(output) == 0 {
+							helper.ShowMessage(fmt.Sprintln("No difference for", targets[i]))
+						}
+					case "Do nothing":
+						fallthrough
+					case "":
+						commitExit = true
+						break
+					default:
+						helper.ShowError(fmt.Sprintln("Unknown operator:", operator))
+				}
+			}
 			}
 		case "Add repository":
 			repository, _ := helper.GetDir()
