@@ -112,6 +112,7 @@ func CloseProgressbar (handle string) error {
 	return cmd.Start()
 }
 
+// Shows a text box and returns the text input into the text box
 func TextInput(header string) (string, error) {
 	cmd := exec.Command("/usr/bin/kdialog", "--title", "gogitui", "--textinputbox", header)
 	out, err := cmd.Output()
