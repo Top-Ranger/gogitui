@@ -122,9 +122,16 @@ func main() {
 					continue
 				}
 
+				gitstatus = exec.Command("/usr/bin/git", "status")
+				gitstatus.Dir = targets[i]
+				output_status, err := gitstatus.CombinedOutput()
+				if err != nil {
+					helper.ShowError(fmt.Sprintln("Error while git status at", targets[i], ":\n", string(output_status), "\n\nError:", err))
+				}
+
 				commitExit := false
 				for !commitExit {
-					operator, _ := helper.Menu(fmt.Sprintln("Repository:", targets[i]), []string{"git commit -a", "git add -A && git commit", "git difftool", "Do nothing"})
+					operator, _ := helper.Menu(fmt.Sprintln("Repository:", targets[i], "\n\n", string(output_status)), []string{"git commit -a", "git add -A && git commit", "git difftool", "Do nothing"})
 					switch operator {
 					case "git commit -a":
 						message, _ := helper.TextInput(fmt.Sprintln("Commit message for", targets[i]))
