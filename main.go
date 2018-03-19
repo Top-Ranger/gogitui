@@ -32,7 +32,7 @@ func main() {
 
 	exit := false
 	for !exit {
-		option, _ := helper.Menu("Select action", []string{"git pull", "git push", "git difftool", "git commit", "Add repository", "Remove repository", "Exit"})
+		option, _ := helper.Menu("Select action", []string{"git pull", "git push", "git status", "git difftool", "git commit", "Add repository", "Remove repository", "Exit"})
 		fmt.Println(option)
 		switch option {
 		case "git pull":
@@ -71,6 +71,21 @@ func main() {
 				}
 			}
 			helper.CloseProgressbar(handle)
+		case "git status":
+			targets, _ :=  helper.Checklist("Select repositories for push:", config.Repositories, "off")
+			if len(targets) == 0 {
+				break
+			}
+			for i := range targets {
+				gitstatus := exec.Command("/usr/bin/git", "status")
+				gitstatus.Dir = targets[i]
+				output, err := gitstatus.CombinedOutput()
+				fmt.Println(string(output))
+				if err != nil {
+					helper.ShowError(fmt.Sprintln("Error while git status at", targets[i], ":\n", string(output), "\n\nError:", err))
+				}
+				helper.ShowMessage(fmt.Sprint("Repository ", targets[i], ":\n\n", string(output)))
+			}
 		case "git difftool":
 			targets, _ :=  helper.Checklist("Select repositories for push:", config.Repositories, "off")
 			if len(targets) == 0 {
