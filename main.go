@@ -8,6 +8,7 @@ import (
 	"github.com/Top-Ranger/gogitui/helper"
 	"path"
 	"os/exec"
+	"log"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 		r := recover()
 		if r != nil {
 			helper.ShowError(fmt.Sprint(r))
-			panic(r)
+			log.Println(r)
 			os.Exit(1)
 		}
 	}()
