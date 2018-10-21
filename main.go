@@ -4,11 +4,12 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"github.com/Top-Ranger/gogitui/helper"
-	"path"
-	"os/exec"
 	"log"
+	"os"
+	"os/exec"
+	"path"
+
+	"github.com/Top-Ranger/gogitui/helper"
 )
 
 func main() {
@@ -38,7 +39,7 @@ func main() {
 		fmt.Println(option)
 		switch option {
 		case "git pull":
-			targets, _ :=  helper.Checklist("Select repositories for pull:", config.Repositories, "on")
+			targets, _ := helper.Checklist("Select repositories for pull:", config.Repositories, "on")
 			if len(targets) == 0 {
 				break
 			}
@@ -56,7 +57,7 @@ func main() {
 			}
 			helper.CloseProgressbar(handle)
 		case "git push":
-			targets, _ :=  helper.Checklist("Select repositories for push:", config.Repositories, "on")
+			targets, _ := helper.Checklist("Select repositories for push:", config.Repositories, "on")
 			if len(targets) == 0 {
 				break
 			}
@@ -74,7 +75,7 @@ func main() {
 			}
 			helper.CloseProgressbar(handle)
 		case "git status":
-			targets, _ :=  helper.Checklist("Select repositories for push:", config.Repositories, "off")
+			targets, _ := helper.Checklist("Select repositories for push:", config.Repositories, "off")
 			if len(targets) == 0 {
 				break
 			}
@@ -89,7 +90,7 @@ func main() {
 				helper.ShowMessage(fmt.Sprint("Repository ", targets[i], ":\n\n", string(output)))
 			}
 		case "git difftool":
-			targets, _ :=  helper.Checklist("Select repositories for push:", config.Repositories, "off")
+			targets, _ := helper.Checklist("Select repositories for push:", config.Repositories, "off")
 			if len(targets) == 0 {
 				break
 			}
@@ -106,7 +107,7 @@ func main() {
 				}
 			}
 		case "git commit":
-			targets, _ :=  helper.Checklist("Select repositories for commit:", config.Repositories, "off")
+			targets, _ := helper.Checklist("Select repositories for commit:", config.Repositories, "off")
 			if len(targets) == 0 {
 				break
 			}
@@ -126,14 +127,14 @@ func main() {
 
 				gitstatus = exec.Command("/usr/bin/git", "status")
 				gitstatus.Dir = targets[i]
-				output_status, err := gitstatus.CombinedOutput()
+				outputStatus, err := gitstatus.CombinedOutput()
 				if err != nil {
-					helper.ShowError(fmt.Sprintln("Error while git status at", targets[i], ":\n", string(output_status), "\n\nError:", err))
+					helper.ShowError(fmt.Sprintln("Error while git status at", targets[i], ":\n", string(outputStatus), "\n\nError:", err))
 				}
 
 				commitExit := false
 				for !commitExit {
-					operator, _ := helper.Menu(fmt.Sprintln("Repository:", targets[i], "\n\n", string(output_status)), []string{"git commit -a", "git add -A && git commit", "git difftool", "Do nothing"})
+					operator, _ := helper.Menu(fmt.Sprintln("Repository:", targets[i], "\n\n", string(outputStatus)), []string{"git commit -a", "git add -A && git commit", "git difftool", "Do nothing"})
 					switch operator {
 					case "git commit -a":
 						message, _ := helper.TextInput(fmt.Sprintln("Commit message for", targets[i]))
@@ -191,8 +192,8 @@ func main() {
 						break
 					default:
 						helper.ShowError(fmt.Sprintln("Unknown operator:", operator))
+					}
 				}
-			}
 			}
 		case "Add repository":
 			repository, _ := helper.GetDir()
