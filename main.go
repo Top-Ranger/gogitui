@@ -1,4 +1,17 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2018,2019 Marcus Soll
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//	  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package main
 
@@ -24,8 +37,8 @@ func main() {
 
 	fmt.Println("== gogitui ==")
 	fmt.Println("A simple git ui managing multiple repositories")
-	fmt.Println("Copyright 2018 Marcus Soll")
-	fmt.Println("License: MIT")
+	fmt.Println("Copyright 2018,2019 Marcus Soll")
+	fmt.Println("License: Apache 2.0")
 	fmt.Println()
 
 	config, err := helper.LoadConfig()

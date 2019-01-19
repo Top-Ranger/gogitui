@@ -11,4 +11,4 @@ Dependencies
 
 License
 -------
-MIT. See [COPYING](COPYING)
+APACHE 2.0. See [COPYING](COPYING)
