@@ -17,7 +17,6 @@ package helper
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"os/user"
 	"path"
@@ -38,7 +37,7 @@ func LoadConfig() (Config, error) {
 		return config, err
 	}
 
-	configData, err := ioutil.ReadFile(path.Join(u.HomeDir, ".config/gogitui/config.json"))
+	configData, err := os.ReadFile(path.Join(u.HomeDir, ".config/gogitui/config.json"))
 	if os.IsNotExist(err) {
 		return config, nil
 	}
